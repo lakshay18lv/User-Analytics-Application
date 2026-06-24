@@ -22,16 +22,9 @@ A simple full-stack analytics demo for tracking page views and clicks, storing t
    npm install
    ```
 
-2. Create `server/.env`:
-   ```env
-   PORT=4000
-   MONGODB_URI=mongodb://127.0.0.1:27017/user_analytics
-   CLIENT_ORIGIN=http://localhost:4000
-   ```
+2. Start MongoDB locally.
 
-3. Start MongoDB locally.
-
-4. Run the app:
+3. Run the app:
    ```bash
    npm run dev
    ```
