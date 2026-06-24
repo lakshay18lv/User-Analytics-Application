@@ -16,7 +16,7 @@ function normalizeEvent(payload) {
     x: payload.x ?? null,
     y: payload.y ?? null,
     userAgent: payload.user_agent || payload.userAgent || "",
-    referrer: payload.referrer || ""
+    referrer: payload.referrer || "",
   };
 }
 
@@ -24,9 +24,15 @@ eventsRouter.post("/", async (req, res, next) => {
   try {
     const event = normalizeEvent(req.body || {});
 
-    if (!event.sessionId || !event.eventType || !event.pageUrl || Number.isNaN(event.timestamp.getTime())) {
+    if (
+      !event.sessionId ||
+      !event.eventType ||
+      !event.pageUrl ||
+      Number.isNaN(event.timestamp.getTime())
+    ) {
       return res.status(400).json({
-        message: "session_id, event_type, page_url, and a valid timestamp are required"
+        message:
+          "session_id, event_type, page_url, and a valid timestamp are required",
       });
     }
 
@@ -45,11 +51,11 @@ eventsRouter.get("/sessions", async (_req, res, next) => {
           _id: "$sessionId",
           eventCount: { $sum: 1 },
           firstEventAt: { $min: "$timestamp" },
-          lastEventAt: { $max: "$timestamp" }
-        }
+          lastEventAt: { $max: "$timestamp" },
+        },
       },
       {
-        $sort: { lastEventAt: -1 }
+        $sort: { lastEventAt: -1 },
       },
       {
         $project: {
@@ -57,9 +63,9 @@ eventsRouter.get("/sessions", async (_req, res, next) => {
           sessionId: "$_id",
           eventCount: 1,
           firstEventAt: 1,
-          lastEventAt: 1
-        }
-      }
+          lastEventAt: 1,
+        },
+      },
     ]);
 
     res.json({ sessions });
@@ -71,7 +77,9 @@ eventsRouter.get("/sessions", async (_req, res, next) => {
 eventsRouter.get("/sessions/:sessionId/events", async (req, res, next) => {
   try {
     const { sessionId } = req.params;
-    const events = await Event.find({ sessionId }).sort({ timestamp: 1 }).lean();
+    const events = await Event.find({ sessionId })
+      .sort({ timestamp: 1 })
+      .lean();
     res.json({ sessionId, events });
   } catch (error) {
     next(error);
@@ -82,14 +90,16 @@ eventsRouter.get("/heatmap", async (req, res, next) => {
   try {
     const { pageUrl } = req.query;
     if (!pageUrl) {
-      return res.status(400).json({ message: "pageUrl query parameter is required" });
+      return res
+        .status(400)
+        .json({ message: "pageUrl query parameter is required" });
     }
 
     const clicks = await Event.find({
       pageUrl,
       eventType: "click",
       x: { $ne: null },
-      y: { $ne: null }
+      y: { $ne: null },
     })
       .sort({ timestamp: 1 })
       .lean();
@@ -108,23 +118,23 @@ eventsRouter.get("/pages", async (_req, res, next) => {
           _id: "$pageUrl",
           clickCount: {
             $sum: {
-              $cond: [{ $eq: ["$eventType", "click"] }, 1, 0]
-            }
+              $cond: [{ $eq: ["$eventType", "click"] }, 1, 0],
+            },
           },
-          eventCount: { $sum: 1 }
-        }
+          eventCount: { $sum: 1 },
+        },
       },
       {
-        $sort: { eventCount: -1, _id: 1 }
+        $sort: { eventCount: -1, _id: 1 },
       },
       {
         $project: {
           _id: 0,
           pageUrl: "$_id",
           clickCount: 1,
-          eventCount: 1
-        }
-      }
+          eventCount: 1,
+        },
+      },
     ]);
 
     res.json({ pages });
