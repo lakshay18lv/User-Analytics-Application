@@ -9,14 +9,10 @@ import { eventsRouter } from "./routes/events.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, "..", "..");
+const publicDir = path.join(rootDir, "server", "public");
+const appBuildDir = path.join(publicDir, "app");
 const clientIndexHtmlPath = path.join(rootDir, "client", "index.html");
-const dashboardBuildPath = path.join(
-  rootDir,
-  "server",
-  "public",
-  "app",
-  "index.html",
-);
+const dashboardBuildPath = path.join(appBuildDir, "index.html");
 
 export async function createApp() {
   const app = express();
@@ -61,9 +57,8 @@ export async function createApp() {
       }
     });
   } else {
-    app.use(
-      express.static(path.join(__dirname, "../public"), { index: false }),
-    );
+    app.use(express.static(publicDir, { index: false }));
+    app.use(express.static(appBuildDir, { index: false }));
 
     app.get("/", (_req, res) => {
       if (fs.existsSync(dashboardBuildPath)) {
@@ -79,15 +74,8 @@ export async function createApp() {
         return next();
       }
 
-      const buildIndex = path.join(
-        rootDir,
-        "server",
-        "public",
-        "app",
-        "index.html",
-      );
-      if (fs.existsSync(buildIndex)) {
-        res.sendFile(buildIndex);
+      if (fs.existsSync(dashboardBuildPath)) {
+        res.sendFile(dashboardBuildPath);
         return;
       }
 
