@@ -11,7 +11,13 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, "..", "..");
 const clientIndexHtmlPath = path.join(rootDir, "client", "index.html");
-const dashboardBuildPath = path.join(rootDir, "server", "public", "app", "index.html");
+const dashboardBuildPath = path.join(
+  rootDir,
+  "server",
+  "public",
+  "app",
+  "index.html",
+);
 
 export async function createApp() {
   const app = express();
@@ -19,8 +25,8 @@ export async function createApp() {
   app.use(
     cors({
       origin: true,
-      credentials: true
-    })
+      credentials: true,
+    }),
   );
   app.use(express.json({ limit: "1mb" }));
 
@@ -35,8 +41,8 @@ export async function createApp() {
       root: path.join(rootDir, "client"),
       appType: "custom",
       server: {
-        middlewareMode: true
-      }
+        middlewareMode: true,
+      },
     });
 
     app.use(vite.middlewares);
@@ -55,7 +61,9 @@ export async function createApp() {
       }
     });
   } else {
-    app.use(express.static(path.join(__dirname, "../public"), { index: false }));
+    app.use(
+      express.static(path.join(__dirname, "../public"), { index: false }),
+    );
 
     app.get("/", (_req, res) => {
       if (fs.existsSync(dashboardBuildPath)) {
@@ -71,7 +79,13 @@ export async function createApp() {
         return next();
       }
 
-      const buildIndex = path.join(rootDir, "server", "public", "app", "index.html");
+      const buildIndex = path.join(
+        rootDir,
+        "server",
+        "public",
+        "app",
+        "index.html",
+      );
       if (fs.existsSync(buildIndex)) {
         res.sendFile(buildIndex);
         return;
@@ -84,7 +98,7 @@ export async function createApp() {
   app.use((error, _req, res, _next) => {
     console.error(error);
     res.status(500).json({
-      message: "Internal server error"
+      message: "Internal server error",
     });
   });
 

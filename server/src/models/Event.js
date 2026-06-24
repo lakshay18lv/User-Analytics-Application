@@ -5,44 +5,44 @@ const eventSchema = new mongoose.Schema(
     sessionId: {
       type: String,
       required: true,
-      index: true
+      index: true,
     },
     eventType: {
       type: String,
       required: true,
       enum: ["page_view", "click"],
-      index: true
+      index: true,
     },
     pageUrl: {
       type: String,
       required: true,
-      index: true
+      index: true,
     },
     timestamp: {
       type: Date,
       required: true,
-      index: true
+      index: true,
     },
     x: {
       type: Number,
-      default: null
+      default: null,
     },
     y: {
       type: Number,
-      default: null
+      default: null,
     },
     userAgent: {
       type: String,
-      default: ""
+      default: "",
     },
     referrer: {
       type: String,
-      default: ""
-    }
+      default: "",
+    },
   },
   {
-    timestamps: true
-  }
+    timestamps: true,
+  },
 );
 
 eventSchema.index({ sessionId: 1, timestamp: 1 });
