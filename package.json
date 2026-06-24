@@ -6,8 +6,9 @@
     "client"
   ],
   "scripts": {
-    "dev": "npm run dev --workspace server",
+    "dev": "node scripts/dev.js",
     "build": "npm run build --workspace client",
+    "start": "npm run start --workspace server",
     "server": "npm run dev --workspace server",
     "client": "npm run build --workspace client"
   }

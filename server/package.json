@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node src/server",
+    "dev": "node src/server.js",
     "start": "node src/server.js"
   },
   "dependencies": {
@@ -11,5 +11,8 @@
     "dotenv": "^16.6.1",
     "express": "^4.21.2",
     "mongoose": "^8.17.1"
+  },
+  "devDependencies": {
+    "vite": "^7.1.2"
   }
 }

@@ -2,7 +2,6 @@ import express from "express";
 import cors from "cors";
 import fs from "node:fs";
 import path from "node:path";
-import { createServer as createViteServer } from "vite";
 import { fileURLToPath } from "node:url";
 import { config } from "./config.js";
 import { eventsRouter } from "./routes/events.js";
@@ -36,7 +35,8 @@ export async function createApp() {
 
   app.use("/api/events", eventsRouter);
 
-  if (process.env.NODE_ENV !== "production") {
+  if (process.env.LOCAL_VITE === "true") {
+    const { createServer: createViteServer } = await import("vite");
     const vite = await createViteServer({
       root: path.join(rootDir, "client"),
       appType: "custom",

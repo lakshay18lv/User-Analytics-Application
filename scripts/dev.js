@@ -4,6 +4,10 @@ function start(command, args, label) {
   const child = spawn(command, args, {
     stdio: "inherit",
     shell: true,
+    env: {
+      ...process.env,
+      LOCAL_VITE: "true",
+    },
   });
 
   child.on("exit", (code) => {
@@ -16,10 +20,8 @@ function start(command, args, label) {
 }
 
 const server = start("npm", ["run", "dev", "--workspace", "server"], "server");
-const client = start("npm", ["run", "dev", "--workspace", "client"], "client");
 
 process.on("SIGINT", () => {
   server.kill();
-  client.kill();
   process.exit();
 });
