@@ -1,0 +1,14 @@
+{
+  "name": "user-analytics-application",
+  "private": true,
+  "workspaces": [
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace server",
+    "build": "npm run build --workspace client",
+    "server": "npm run dev --workspace server",
+    "client": "npm run build --workspace client"
+  }
+}
