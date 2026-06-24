@@ -3,7 +3,7 @@ const { spawn } = require("node:child_process");
 function start(command, args, label) {
   const child = spawn(command, args, {
     stdio: "inherit",
-    shell: true
+    shell: true,
   });
 
   child.on("exit", (code) => {
