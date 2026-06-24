@@ -5,13 +5,17 @@ function formatDate(value) {
   if (!value) return "-";
   return new Intl.DateTimeFormat("en-US", {
     dateStyle: "medium",
-    timeStyle: "short"
+    timeStyle: "short",
   }).format(new Date(value));
 }
 
 function SessionCard({ session, selected, onSelect }) {
   return (
-    <button type="button" className={`session-card ${selected ? "selected" : ""}`} onClick={() => onSelect(session.sessionId)}>
+    <button
+      type="button"
+      className={`session-card ${selected ? "selected" : ""}`}
+      onClick={() => onSelect(session.sessionId)}
+    >
       <div>
         <strong>{session.sessionId.slice(0, 8)}</strong>
         <span>{session.eventCount} events</span>
@@ -23,7 +27,11 @@ function SessionCard({ session, selected, onSelect }) {
 
 function JourneyPanel({ loading, events, sessionId }) {
   if (!sessionId) {
-    return <div className="empty-state">Select a session to view the user journey.</div>;
+    return (
+      <div className="empty-state">
+        Select a session to view the user journey.
+      </div>
+    );
   }
 
   if (loading) {
@@ -31,13 +39,18 @@ function JourneyPanel({ loading, events, sessionId }) {
   }
 
   if (events.length === 0) {
-    return <div className="empty-state">This session has no tracked events yet.</div>;
+    return (
+      <div className="empty-state">This session has no tracked events yet.</div>
+    );
   }
 
   return (
     <div className="journey-list">
       {events.map((event, index) => (
-        <article className="journey-item" key={`${event._id || index}-${event.timestamp}`}>
+        <article
+          className="journey-item"
+          key={`${event._id || index}-${event.timestamp}`}
+        >
           <div className="journey-index">{index + 1}</div>
           <div className="journey-content">
             <div className="journey-meta">
@@ -60,14 +73,18 @@ function JourneyPanel({ loading, events, sessionId }) {
 function HeatmapCanvas({ clicks }) {
   return (
     <div className="heatmap-canvas">
-      {clicks.length === 0 ? <div className="heatmap-empty">No clicks recorded for this page yet.</div> : null}
+      {clicks.length === 0 ? (
+        <div className="heatmap-empty">
+          No clicks recorded for this page yet.
+        </div>
+      ) : null}
       {clicks.map((click, index) => (
         <span
           key={`${click._id || index}-${click.timestamp}`}
           className="heat-dot"
           style={{
             left: `${Math.min(Math.max(click.x / 12, 2), 98)}%`,
-            top: `${Math.min(Math.max(click.y / 8, 2), 94)}%`
+            top: `${Math.min(Math.max(click.y / 8, 2), 94)}%`,
           }}
         />
       ))}
@@ -131,7 +148,7 @@ export default function App() {
 
   const totalEvents = useMemo(
     () => sessions.reduce((sum, session) => sum + session.eventCount, 0),
-    [sessions]
+    [sessions],
   );
 
   const totalSessions = sessions.length;
@@ -142,7 +159,10 @@ export default function App() {
         <div>
           <span className="brand">CausalFunnel</span>
           <h1>User Analytics</h1>
-          <p>Track sessions, inspect journeys, and view click activity on a simple heatmap.</p>
+          <p>
+            Track sessions, inspect journeys, and view click activity on a
+            simple heatmap.
+          </p>
         </div>
 
         <div className="stats-grid">
@@ -157,10 +177,18 @@ export default function App() {
         </div>
 
         <nav className="view-switcher">
-          <button type="button" className={activeView === "sessions" ? "active" : ""} onClick={() => setActiveView("sessions")}>
+          <button
+            type="button"
+            className={activeView === "sessions" ? "active" : ""}
+            onClick={() => setActiveView("sessions")}
+          >
             Sessions View
           </button>
-          <button type="button" className={activeView === "heatmap" ? "active" : ""} onClick={() => setActiveView("heatmap")}>
+          <button
+            type="button"
+            className={activeView === "heatmap" ? "active" : ""}
+            onClick={() => setActiveView("heatmap")}
+          >
             Heatmap View
           </button>
         </nav>
@@ -168,7 +196,11 @@ export default function App() {
         <div className="panel">
           <div className="panel-header">
             <h2>Sessions</h2>
-            {loadingSessions ? <span className="muted">Loading…</span> : <span className="muted">{sessions.length} total</span>}
+            {loadingSessions ? (
+              <span className="muted">Loading…</span>
+            ) : (
+              <span className="muted">{sessions.length} total</span>
+            )}
           </div>
 
           <div className="session-list">
@@ -180,7 +212,11 @@ export default function App() {
                 onSelect={setSelectedSession}
               />
             ))}
-            {!loadingSessions && sessions.length === 0 ? <div className="empty-state">No sessions yet. Open the demo page to create one.</div> : null}
+            {!loadingSessions && sessions.length === 0 ? (
+              <div className="empty-state">
+                No sessions yet. Open the demo page to create one.
+              </div>
+            ) : null}
           </div>
         </div>
       </aside>
@@ -195,9 +231,15 @@ export default function App() {
                 <span className="section-label">Session journey</span>
                 <h2>Ordered events</h2>
               </div>
-              <span className="muted">{selectedSession ? selectedSession : "No session selected"}</span>
+              <span className="muted">
+                {selectedSession ? selectedSession : "No session selected"}
+              </span>
             </div>
-            <JourneyPanel loading={loadingJourney} events={events} sessionId={selectedSession} />
+            <JourneyPanel
+              loading={loadingJourney}
+              events={events}
+              sessionId={selectedSession}
+            />
           </section>
         ) : null}
 
@@ -208,7 +250,10 @@ export default function App() {
                 <span className="section-label">Heatmap</span>
                 <h2>Page clicks</h2>
               </div>
-              <select value={selectedPage} onChange={(event) => setSelectedPage(event.target.value)}>
+              <select
+                value={selectedPage}
+                onChange={(event) => setSelectedPage(event.target.value)}
+              >
                 {pages.map((page) => (
                   <option key={page.pageUrl} value={page.pageUrl}>
                     {page.pageUrl}
@@ -219,7 +264,10 @@ export default function App() {
 
             <div className="heatmap-wrap">
               {pages.length === 0 ? (
-                <div className="empty-state">No tracked pages yet. Visit the demo page to generate click data.</div>
+                <div className="empty-state">
+                  No tracked pages yet. Visit the demo page to generate click
+                  data.
+                </div>
               ) : loadingHeatmap ? (
                 <div className="empty-state">Loading heatmap...</div>
               ) : (
